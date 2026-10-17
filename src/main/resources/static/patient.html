@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CityCare Patient Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root { --blue:#1264d8; --teal:#19aaa1; --ink:#12314a; --muted:#64798e; --line:#dce7f5; }
+    body { margin:0; color:var(--ink); background:linear-gradient(135deg,#f4f9ff,#e8f6ff); font-family:"Segoe UI",Tahoma,sans-serif; }
+    .auth { min-height:100vh; display:grid; place-items:center; padding:24px; background:linear-gradient(135deg,#082b59,#1457b8); }
+    .auth-card,.panel { background:#fff; border:1px solid var(--line); border-radius:24px; box-shadow:0 18px 45px rgba(18,49,74,.12); }
+    .auth-card { width:min(980px,100%); overflow:hidden; display:grid; grid-template-columns:1fr 1fr; }
+    .auth-hero { padding:44px; color:#fff; background:linear-gradient(135deg,#0f4d8f,#1d7cf2 55%,#31c6c0); }
+    .auth-form { padding:44px; }
+    .app { min-height:100vh; display:none; }
+    .sidebar { width:255px; min-height:100vh; color:#fff; background:linear-gradient(180deg,#0d3f77,#135fc1); }
+    .sidebar a { display:block; color:#eaf4ff; text-decoration:none; padding:12px 16px; border-radius:12px; margin:5px 0; }
+    .sidebar a.active,.sidebar a:hover { background:rgba(255,255,255,.16); color:#fff; }
+    .main { flex:1; min-width:0; padding:28px; }
+    .hero { color:#fff; border-radius:22px; padding:26px; background:linear-gradient(135deg,#0d3f77,#1d7cf2 50%,#31c6c0); }
+    .stat { padding:22px; min-height:145px; }
+    .stat h2 { font-size:2rem; }
+    .sidebar a, .btn, .form-control, .form-select { font-size:1.05rem; }
+    .sidebar a { padding:15px 16px; }
+    .panel { box-shadow:0 14px 32px rgba(18,49,74,.14); }
+    @media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto !important; transition:none !important; } }
+    .view { display:none; } .view.active { display:block; }
+    .form-control,.form-select { border-radius:12px; padding:.7rem .85rem; }
+    @media(max-width:800px) { .auth-card { grid-template-columns:1fr; } .auth-hero { padding:28px; } .auth-form { padding:28px; } .sidebar { width:210px; } .main { padding:16px; } }
+  </style>
+</head>
+<body>
+  <section id="auth" class="auth">
+    <div class="auth-card">
+      <div class="auth-hero">
+        <div class="badge bg-light text-primary mb-4">CityCare Patient Portal</div>
+        <h1 class="fw-bold">Your care, in one place.</h1>
+        <p class="mt-3 mb-4">Book visits, see prescriptions and medical reports, check lab results, and manage bills securely.</p>
+        <div class="d-grid gap-2 small">
+          <div><i class="fa-solid fa-circle-check me-2"></i>Private patient access</div>
+          <div><i class="fa-solid fa-circle-check me-2"></i>Connected to hospital records</div>
+          <div><i class="fa-solid fa-circle-check me-2"></i>Simple support for every family</div>
+        </div>
+      </div>
+      <div class="auth-form">
+        <div class="d-flex gap-2 mb-4">
+          <button id="login-tab" class="btn btn-primary" type="button">Patient Login</button>
+          <button id="register-tab" class="btn btn-outline-primary" type="button">Register</button>
+        </div>
+        <form id="login-form">
+          <h3 class="fw-bold">Welcome back</h3>
+          <p class="text-muted">Use your patient account credentials.</p>
+          <label class="form-label">Username</label><input id="login-username" class="form-control mb-3" required>
+          <label class="form-label">Password</label><input id="login-password" type="password" class="form-control mb-4" required>
+          <button class="btn btn-primary w-100" type="submit">Login securely</button>
+        </form>
+        <form id="register-form" class="d-none">
+          <h3 class="fw-bold">Create patient account</h3>
+          <p class="text-muted">Self-registration creates a patient-role account.</p>
+          <label class="form-label">Username</label><input id="register-username" class="form-control mb-3" required>
+          <label class="form-label">Password</label><input id="register-password" type="password" minlength="6" class="form-control mb-4" required>
+          <button class="btn btn-primary w-100" type="submit">Create account</button>
+        </form>
+        <div id="auth-message" class="small mt-3"></div>
+        <a class="d-block mt-4 small" id="hospital-portal-link" href="/">Back to hospital/admin portal</a>
+      </div>
+    </div>
+  </section>
+
+  <div id="app" class="app d-flex">
+    <aside class="sidebar p-3">
+      <h4 class="mb-4"><i class="fa-solid fa-heart-pulse me-2"></i>CityCare</h4>
+      <a href="#" data-view="home" class="active"><i class="fa-solid fa-house me-2"></i>My Dashboard</a>
+      <a href="#" data-view="appointments"><i class="fa-solid fa-calendar-check me-2"></i>Appointments</a>
+      <a href="#" data-view="records"><i class="fa-solid fa-file-medical me-2"></i>Medical Records</a>
+      <a href="#" data-view="labs"><i class="fa-solid fa-flask me-2"></i>Lab Reports</a>
+      <a href="#" data-view="billing"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Billing</a>
+      <a href="#" data-view="prescriptions"><i class="fa-solid fa-pills me-2"></i>Prescriptions</a>
+      <a href="#" data-view="profile"><i class="fa-solid fa-user me-2"></i>My Profile</a>
+      <a href="#" id="logout" class="mt-4"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout / Switch account</a>
+    </aside>
+    <main class="main">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div><h2 class="fw-bold mb-1">Patient Dashboard</h2><div class="text-muted">Welcome, <span id="patient-name">Patient</span></div></div>
+        <div class="d-flex align-items-center gap-2"><button id="patient-back-dashboard" class="btn btn-outline-primary d-none" type="button"><i class="fa-solid fa-arrow-left me-1"></i>Back to Dashboard</button><span class="badge text-bg-success"><i class="fa-solid fa-shield-heart me-1"></i>Secure</span></div>
+      </div>
+      <section id="home" class="view active">
+        <div class="hero mb-4"><h3 class="fw-bold">Your health journey, simplified.</h3><p class="mb-0">Manage your visits and health information from one trusted portal.</p></div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4"><div class="panel stat"><i class="fa-solid fa-calendar-check text-primary fs-3"></i><h6 class="text-muted mt-3">Appointments</h6><h2 id="appointment-count">0</h2></div></div>
+          <div class="col-md-4"><div class="panel stat"><i class="fa-solid fa-flask text-success fs-3"></i><h6 class="text-muted mt-3">Lab Reports</h6><h2>3</h2></div></div>
+          <div class="col-md-4"><div class="panel stat"><i class="fa-solid fa-file-invoice-dollar text-warning fs-3"></i><h6 class="text-muted mt-3">Open Bills</h6><h2>1</h2></div></div>
+        </div>
+        <div class="panel p-4"><div class="d-flex justify-content-between align-items-center mb-3"><h4 class="fw-bold mb-0">Upcoming appointments</h4><button class="btn btn-primary" data-view="appointments">Book appointment</button></div><div id="upcoming"></div></div>
+      </section>
+      <section id="appointments" class="view"><div class="panel p-4"><h3 class="fw-bold">Book Appointment</h3><p class="text-muted">Choose a doctor and time. Your request is saved in the hospital system.</p><form id="booking-form" class="row g-3"><div class="col-md-6"><label class="form-label">Doctor</label><select id="doctor" class="form-select" required></select></div><div class="col-md-6"><label class="form-label">Date and time</label><input id="visit-time" type="datetime-local" class="form-control" required></div><div class="col-12"><label class="form-label">Reason</label><textarea id="reason" class="form-control" rows="3"></textarea></div><div class="col-12"><button class="btn btn-primary" type="submit">Confirm appointment</button></div></form><hr><h5 class="fw-bold">My appointments</h5><div id="appointment-list"></div></div></section>
+      <section id="records" class="view"><div class="panel p-4"><h3 class="fw-bold">Medical Records</h3><p class="text-muted">Your diagnosis history and care notes from the hospital.</p><div class="list-group"><div class="list-group-item">2026-08-18 · General consultation · Reviewed</div><div class="list-group-item">2026-07-21 · Cardiology follow-up · Care plan active</div></div></div></section>
+      <section id="labs" class="view"><div class="panel p-4"><h3 class="fw-bold">Lab Reports</h3><div class="table-responsive"><table class="table"><thead><tr><th>Report</th><th>Date</th><th>Result</th><th></th></tr></thead><tbody><tr><td>CBC Panel</td><td>2026-08-18</td><td><span class="badge text-bg-success">Normal</span></td><td><button class="btn btn-sm btn-outline-primary" data-message="CBC report opened">View</button></td></tr><tr><td>Lipid Profile</td><td>2026-08-12</td><td><span class="badge text-bg-info">Reviewed</span></td><td><button class="btn btn-sm btn-outline-primary" data-message="Lipid profile opened">View</button></td></tr></tbody></table></div></div></section>
+      <section id="billing" class="view"><div class="panel p-4"><h3 class="fw-bold">Billing</h3><div class="table-responsive"><table class="table"><thead><tr><th>Invoice</th><th>Service</th><th>Amount</th><th>Status</th></tr></thead><tbody><tr><td>INV-1042</td><td>Consultation</td><td>₹420</td><td><span class="badge text-bg-warning">Open</span></td></tr><tr><td>INV-0981</td><td>Diagnostics</td><td>₹295</td><td><span class="badge text-bg-success">Paid</span></td></tr></tbody></table></div></div></section>
+      <section id="prescriptions" class="view"><div class="panel p-4"><h3 class="fw-bold">Prescriptions</h3><div class="list-group"><div class="list-group-item d-flex justify-content-between"><span>Blood pressure medication · 30 days</span><span class="badge text-bg-success">Active</span></div><div class="list-group-item d-flex justify-content-between"><span>Vitamin D · As prescribed</span><span class="badge text-bg-success">Active</span></div></div></div></section>
+      <section id="profile" class="view"><div class="panel p-4"><h3 class="fw-bold">My Profile</h3><p><strong>Username:</strong> <span id="profile-username"></span></p><p><strong>Portal:</strong> Patient</p><p class="text-muted mb-0">For profile changes, contact the CityCare help desk.</p></div></section>
+    </main>
+  </div>
+  <div id="toast" class="position-fixed bottom-0 end-0 p-3"></div>
+  <script src="/patient.js"></script>
+</body>
+</html>

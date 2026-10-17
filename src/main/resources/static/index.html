@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CityCare Hospital Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <section id="login-screen" class="login-screen">
+      <div class="container py-4">
+        <div class="row justify-content-center">
+          <div class="col-xl-10">
+            <div class="auth-card shadow-lg">
+              <div class="auth-hero">
+                <div class="hero-badge"><i class="fas fa-shield-heart me-2"></i>Trusted Care Platform</div>
+                <div class="medical-illustration" aria-hidden="true">
+                  <div class="illustration-circle"></div>
+                  <div class="illustration-doctor">
+                    <i class="fas fa-user-md"></i>
+                  </div>
+                  <div class="medical-cross"></div>
+                </div>
+                <h1 class="fw-bold mb-3">CityCare Hospital</h1>
+                <p class="mb-4">Securely manage patients, doctors, appointments, billing, and care operations from a single premium dashboard.</p>
+                <ul class="list-unstyled feature-list">
+                  <li><i class="fas fa-check-circle me-2"></i>Smart patient workflow</li>
+                  <li><i class="fas fa-check-circle me-2"></i>Live appointment visibility</li>
+                  <li><i class="fas fa-check-circle me-2"></i>Modern clinical insights</li>
+                </ul>
+              </div>
+
+              <div class="auth-panel">
+                <div class="auth-toggle" role="tablist" aria-label="Authentication mode">
+                  <button type="button" class="toggle-pill active" id="show-login-btn" onclick="toggleAuthMode('login')">Login</button>
+                  <button type="button" class="toggle-pill" id="show-register-btn" onclick="toggleAuthMode('register')">Register</button>
+                </div>
+
+                <div id="login-form-panel" class="auth-form-panel">
+                  <h3 class="fw-bold mb-2">Admin / Hospital Staff Login</h3>
+                  <p class="text-muted mb-4">Admin and host accounts open their own hospital dashboard. Patients can use the separate patient portal below.</p>
+                  <form>
+                    <div class="mb-3 input-shell">
+                      <label for="username" class="form-label">Username</label>
+                      <input id="username" class="form-control form-control-lg" placeholder="Enter username" />
+                    </div>
+                    <div class="mb-3 input-shell">
+                      <label for="password" class="form-label">Password</label>
+                      <input id="password" type="password" class="form-control form-control-lg" placeholder="Enter password" />
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe" />
+                        <label class="form-check-label" for="rememberMe">Keep me signed in</label>
+                      </div>
+                      <a href="#" class="text-decoration-none small">Forgot password?</a>
+                    </div>
+                    <div class="d-grid gap-2">
+                      <button type="button" class="btn btn-primary btn-lg btn-ripple" onclick="login()">Login</button>
+                    </div>
+                    <div id="auth-result" class="mt-3 text-muted"></div>
+                    <div class="small mt-3">Patient? <a href="/patient.html">Open patient portal</a></div>
+                  </form>
+                </div>
+
+                <div id="register-form-panel" class="auth-form-panel d-none">
+                  <h3 class="fw-bold mb-2">Create Account</h3>
+                  <p class="text-muted mb-4">Register a new patient account, or use an existing admin/host account to continue.</p>
+                  <form>
+                    <div class="mb-3 input-shell">
+                      <label for="register-username" class="form-label">Username</label>
+                      <input id="register-username" class="form-control form-control-lg" placeholder="Choose username" />
+                    </div>
+                    <div class="mb-3 input-shell">
+                      <label for="register-password" class="form-label">Password</label>
+                      <input id="register-password" type="password" class="form-control form-control-lg" placeholder="Create a password" />
+                    </div>
+                    <div class="d-grid gap-2">
+                      <button type="button" class="btn btn-primary btn-lg btn-ripple" onclick="register()">Create account</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="app-shell" class="app-shell d-none d-flex">
+      <aside id="sidebar" class="sidebar p-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex align-items-center">
+            <div class="hospital-logo-3d me-2" aria-label="CityCare hospital logo">
+              <i class="fas fa-heart-pulse"></i>
+              <span>+</span>
+            </div>
+            <div>
+              <h5 class="mb-0">CityCare</h5>
+              <small class="opacity-75">Health is Wealth</small>
+            </div>
+          </div>
+          <button class="sidebar-toggle text-white d-lg-none" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+        </div>
+        <nav class="nav flex-column">
+          <a class="nav-link active" href="#" data-view="dashboard"><i class="fas fa-th-large me-2"></i>Dashboard</a>
+          <a class="nav-link" href="#" data-view="patients"><i class="fas fa-procedures me-2"></i>Patient</a>
+          <a class="nav-link" href="#" data-view="doctors"><i class="fas fa-user-md me-2"></i>Doctor</a>
+          <a class="nav-link" href="#" data-view="appointments"><i class="fas fa-calendar-check me-2"></i>Appointment</a>
+          <a class="nav-link" href="#" data-view="medicine"><i class="fas fa-pills me-2"></i>Medicine</a>
+          <a class="nav-link" href="#" data-view="billing"><i class="fas fa-file-invoice-dollar me-2"></i>Billing</a>
+          <a class="nav-link" href="#" data-view="reports"><i class="fas fa-chart-bar me-2"></i>Report</a>
+          <a class="nav-link" href="#" data-view="settings"><i class="fas fa-cog me-2"></i>Settings</a>
+          <a class="nav-link" href="#" id="logout-btn"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+        </nav>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar px-4 py-3 d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-0 fw-bold">Hospital Management Dashboard</h4>
+            <small class="text-muted">Professional patient and care operations · Health is Wealth</small>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <button class="btn btn-outline-primary btn-sm d-none" type="button" id="admin-back-dashboard"><i class="fas fa-arrow-left me-1"></i>Back to Dashboard</button>
+            <label class="visually-hidden" for="dashboard-section-select">Select dashboard section</label>
+            <select id="dashboard-section-select" class="form-select form-select-sm dashboard-select" aria-label="Select dashboard section">
+              <option value="dashboard">Overview</option>
+              <option value="patients">Patients</option>
+              <option value="appointments">Appointments</option>
+              <option value="billing">Billing</option>
+              <option value="reports">Reports</option>
+            </select>
+            <a class="btn btn-outline-primary btn-sm" href="/patient.html"><i class="fas fa-user-injured me-1"></i>Patient Portal</a>
+            <div class="input-group search-shell" style="max-width: 260px;">
+              <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
+              <input class="form-control border-start-0" placeholder="Search" />
+            </div>
+            <button class="btn btn-outline-secondary position-relative btn-ripple" type="button"><i class="fas fa-bell"></i><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span></button>
+            <div class="d-flex align-items-center gap-2 profile-pill">
+              <div class="rounded-circle bg-primary text-white p-2"><i class="fas fa-user"></i></div>
+              <div>
+                <div class="fw-semibold">Admin</div>
+                <small class="text-muted">Hospital Admin</small>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-4">
+          <section id="dashboard-view" class="view-section fade-in">
+            <div class="row g-4 mb-4">
+              <div class="col-md-6 col-xl-4">
+                <div class="stat-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="stat-icon"><i class="fas fa-procedures"></i></div>
+                    <span class="badge bg-success-subtle text-success">+12%</span>
+                  </div>
+                  <h6 class="text-muted">Total Patients</h6>
+                  <h2 class="fw-bold mb-0" id="patient-count">0</h2>
+                </div>
+              </div>
+              <div class="col-md-6 col-xl-4">
+                <div class="stat-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+                    <span class="badge bg-primary-subtle text-primary">On duty</span>
+                  </div>
+                  <h6 class="text-muted">Total Doctors</h6>
+                  <h2 class="fw-bold mb-0" id="doctor-count">0</h2>
+                </div>
+              </div>
+              <div class="col-md-6 col-xl-4">
+                <div class="stat-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                    <span class="badge bg-warning-subtle text-warning">Today</span>
+                  </div>
+                  <h6 class="text-muted">Appointments</h6>
+                  <h2 class="fw-bold mb-0" id="appointment-count">0</h2>
+                </div>
+              </div>
+              <div class="col-md-6 col-xl-4">
+                <div class="stat-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="stat-icon"><i class="fas fa-bed"></i></div>
+                    <span class="badge bg-info-subtle text-info">Available</span>
+                  </div>
+                  <h6 class="text-muted">Available Beds</h6>
+                  <h2 class="fw-bold mb-0" id="bed-count">0</h2>
+                </div>
+              </div>
+              <div class="col-md-6 col-xl-4">
+                <div class="stat-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="stat-icon"><i class="fas fa-ambulance"></i></div>
+                    <span class="badge bg-danger-subtle text-danger">Urgent</span>
+                  </div>
+                  <h6 class="text-muted">Emergency Cases</h6>
+                  <h2 class="fw-bold mb-0" id="emergency-count">0</h2>
+                </div>
+              </div>
+              <div class="col-md-6 col-xl-4">
+                <div class="stat-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                    <span class="badge bg-success-subtle text-success">Updated</span>
+                  </div>
+                  <h6 class="text-muted">Revenue</h6>
+                  <h2 class="fw-bold mb-0" id="revenue-count">₹0</h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-card p-4 mb-4 tilt-card">
+              <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                  <h5 class="fw-bold mb-1">Care Modules</h5>
+                  <p class="text-muted mb-0">Fast access to the departments that keep the hospital running smoothly.</p>
+                </div>
+                <span class="badge bg-primary-subtle text-primary">All systems online</span>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6 col-xl-4">
+                  <button class="module-card w-100 text-start" data-view="patients" onclick="showView('patients')">
+                    <i class="fas fa-procedures"></i>
+                    <div>
+                      <h6>Patients</h6>
+                      <p>Admissions, records, and care plans.</p>
+                    </div>
+                  </button>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                  <button class="module-card w-100 text-start" data-view="doctors" onclick="showView('doctors')">
+                    <i class="fas fa-user-md"></i>
+                    <div>
+                      <h6>Doctors</h6>
+                      <p>Clinical teams and specialist availability.</p>
+                    </div>
+                  </button>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                  <button class="module-card w-100 text-start" data-view="appointments" onclick="showView('appointments')">
+                    <i class="fas fa-calendar-check"></i>
+                    <div>
+                      <h6>Appointments</h6>
+                      <p>Care visits, schedules, and follow-ups.</p>
+                    </div>
+                  </button>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                  <button class="module-card w-100 text-start" data-view="medicine" onclick="showView('medicine')">
+                    <i class="fas fa-pills"></i>
+                    <div>
+                      <h6>Pharmacy</h6>
+                      <p>Medication inventory and supply status.</p>
+                    </div>
+                  </button>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                  <button class="module-card w-100 text-start" data-view="billing" onclick="showView('billing')">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <div>
+                      <h6>Billing</h6>
+                      <p>Invoices, payments, and revenue health.</p>
+                    </div>
+                  </button>
+                </div>
+                <div class="col-md-6 col-xl-4">
+                  <button class="module-card w-100 text-start" data-view="reports" onclick="showView('reports')">
+                    <i class="fas fa-chart-bar"></i>
+                    <div>
+                      <h6>Reports</h6>
+                      <p>Performance insights and clinical analytics.</p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-4">
+              <div class="col-lg-7">
+                <div class="content-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 fw-bold">Quick Actions</h5>
+                    <span class="text-muted">Common tasks</span>
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <button class="btn btn-primary w-100 py-3 btn-ripple" data-view="patients" onclick="showView('patients')"><i class="fas fa-user-plus me-2"></i>Add Patient</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-outline-primary w-100 py-3 btn-ripple" data-view="appointments" onclick="showView('appointments')"><i class="fas fa-calendar-plus me-2"></i>Book Appointment</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-success w-100 py-3 btn-ripple" data-view="billing" onclick="showView('billing')"><i class="fas fa-receipt me-2"></i>Create Invoice</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-outline-success w-100 py-3 btn-ripple" data-view="reports" onclick="showView('reports')"><i class="fas fa-file-medical me-2"></i>View Reports</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-5">
+                <div class="content-card p-4 tilt-card">
+                  <h5 class="fw-bold mb-3">Recent Activity</h5>
+                  <ul class="list-group list-group-flush" id="recent-activity"></ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-4 mt-1">
+              <div class="col-lg-7">
+                <div class="content-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Patient Statistics</h5>
+                    <span class="badge bg-primary-subtle text-primary">Live overview</span>
+                  </div>
+                  <canvas id="patient-stats-chart"></canvas>
+                </div>
+              </div>
+              <div class="col-lg-5">
+                <div class="content-card p-4 tilt-card">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Appointment Analytics</h5>
+                    <span class="badge bg-info-subtle text-info">Weekly</span>
+                  </div>
+                  <canvas id="appointment-analytics-chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="patients-view" class="view-section fade-in d-none">
+            <div class="content-card p-4 mb-4 hero-panel">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                  <h4 class="fw-bold mb-1">Patient Management</h4>
+                  <p class="text-muted mb-0">Keep patient records organized and accessible.</p>
+                </div>
+                <button class="btn btn-primary"><i class="fas fa-user-plus me-2"></i>Add New Patient</button>
+              </div>
+            </div>
+            <div class="row g-4">
+              <div class="col-lg-4">
+                <div class="content-card p-4 tilt-card">
+                  <h5 class="fw-bold mb-3">Patient Form</h5>
+                  <form id="patient-form">
+                    <div class="mb-3">
+                      <label class="form-label">Full Name</label>
+                      <input id="p-name" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Phone</label>
+                      <input id="p-phone" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Address</label>
+                      <input id="p-address" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Gender</label>
+                      <input id="p-gender" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Date of Birth</label>
+                      <input id="p-dob" type="date" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Medical History</label>
+                      <textarea id="p-history" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit"><i class="fas fa-save me-2"></i>Save Patient</button>
+                  </form>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="content-card p-4">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0">Patient List</h5>
+                    <div class="input-group" style="max-width: 240px;">
+                      <span class="input-group-text"><i class="fas fa-search"></i></span>
+                      <input class="form-control" placeholder="Search patient" />
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Phone</th>
+                          <th>Gender</th>
+                          <th>Address</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="patients-table-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="doctors-view" class="view-section fade-in d-none">
+            <div class="content-card p-4 mb-4 hero-panel">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                  <h4 class="fw-bold mb-1">Doctor Directory</h4>
+                  <p class="text-muted mb-0">Browse doctors by department and availability.</p>
+                </div>
+                <button class="btn btn-outline-primary btn-ripple"><i class="fas fa-plus me-2"></i>Add Doctor</button>
+              </div>
+            </div>
+            <div class="row g-4" id="doctor-grid"></div>
+          </section>
+
+          <section id="appointments-view" class="view-section fade-in d-none">
+            <div class="content-card p-4 mb-4 hero-panel">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                  <h4 class="fw-bold mb-1">Appointment Center</h4>
+                  <p class="text-muted mb-0">Efficiently manage visits and schedules.</p>
+                </div>
+                <button id="book-appointment-btn" class="btn btn-primary" type="button"><i class="fas fa-calendar-plus me-2"></i>Book Appointment</button>
+              </div>
+            </div>
+            <div class="row g-4">
+              <div class="col-lg-4">
+                <div class="content-card p-4">
+                  <h5 class="fw-bold mb-3">New Booking</h5>
+                  <form id="appointment-form">
+                    <div class="mb-3">
+                      <label class="form-label" for="a-patient-id">Patient</label>
+                      <select id="a-patient-id" class="form-select" required></select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label" for="a-doctor-id">Doctor</label>
+                      <select id="a-doctor-id" class="form-select" required></select>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Appointment Time</label>
+                      <input id="a-time" class="form-control" type="datetime-local" required />
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Notes</label>
+                      <textarea id="a-notes" class="form-control" rows="3" placeholder="Reason or visit notes"></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Status</label>
+                      <select id="a-status" class="form-select">
+                        <option value="Scheduled">Scheduled</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit"><i class="fas fa-calendar-check me-2"></i>Save Booking</button>
+                  </form>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="content-card p-4">
+                  <h5 class="fw-bold mb-3">Upcoming Appointments</h5>
+                  <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                      <thead>
+                        <tr>
+                          <th>Patient</th>
+                          <th>Doctor</th>
+                          <th>Time</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="appointments-table-body"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="medicine-view" class="view-section fade-in d-none">
+            <div class="content-card p-4">
+              <h4 class="fw-bold mb-3">Medicine Inventory</h4>
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead>
+                    <tr>
+                      <th>Medicine</th>
+                      <th>Category</th>
+                      <th>Stock</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Paracetamol</td><td>Analgesic</td><td>120</td><td><span class="badge bg-success-subtle text-success">In Stock</span></td></tr>
+                    <tr><td>Amoxicillin</td><td>Antibiotic</td><td>48</td><td><span class="badge bg-warning-subtle text-warning">Low</span></td></tr>
+                    <tr><td>Insulin</td><td>Diabetes</td><td>22</td><td><span class="badge bg-danger-subtle text-danger">Critical</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section id="billing-view" class="view-section fade-in d-none">
+            <div class="content-card p-4 mb-4 hero-panel">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                  <h4 class="fw-bold mb-1">Billing & Payments</h4>
+                  <p class="text-muted mb-0">Monitor invoices, collections, and revenue trends.</p>
+                </div>
+                <button id="create-invoice-btn" class="btn btn-success btn-ripple" type="button"><i class="fas fa-receipt me-2"></i>Create Invoice</button>
+              </div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-md-4">
+                <div class="stat-card p-4">
+                  <h6 class="text-muted">Revenue</h6>
+                  <h3 class="fw-bold mb-0" id="billing-revenue">₹0</h3>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="stat-card p-4">
+                  <h6 class="text-muted">Pending Bills</h6>
+                  <h3 class="fw-bold mb-0" id="billing-pending">0</h3>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="stat-card p-4">
+                  <h6 class="text-muted">Collected</h6>
+                  <h3 class="fw-bold mb-0" id="billing-collected">0%</h3>
+                </div>
+              </div>
+            </div>
+            <div class="content-card p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Billing History</h5>
+                <span class="badge bg-success-subtle text-success">Updated today</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead>
+                    <tr>
+                      <th>Invoice</th>
+                      <th>Patient</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="billing-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section id="reports-view" class="view-section fade-in d-none">
+            <div class="content-card p-4 mb-4 hero-panel">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                  <h4 class="fw-bold mb-1">Analytics & Reports</h4>
+                  <p class="text-muted mb-0">Turn operations into actionable insights.</p>
+                </div>
+                <button id="export-report-btn" class="btn btn-outline-primary btn-ripple" type="button"><i class="fas fa-file-export me-2"></i>Export Report</button>
+              </div>
+            </div>
+            <div class="row g-4 mb-4">
+              <div class="col-lg-8">
+                <div class="content-card p-4">
+                  <h5 class="fw-bold mb-3">Monthly Reports</h5>
+                  <canvas id="monthly-report-chart"></canvas>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="content-card p-4">
+                  <h5 class="fw-bold mb-3">Key Metrics</h5>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-0"><span class="me-2"><i class="fas fa-heartbeat text-danger"></i></span>Emergency response time improved</li>
+                    <li class="list-group-item px-0"><span class="me-2"><i class="fas fa-user-check text-success"></i></span>Patient satisfaction above target</li>
+                    <li class="list-group-item px-0"><span class="me-2"><i class="fas fa-chart-line text-primary"></i></span>Outpatient growth trending upward</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="content-card p-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Report Summary</h5>
+                <span class="badge bg-info-subtle text-info">Live snapshot</span>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                  <thead>
+                    <tr>
+                      <th>Report</th>
+                      <th>Period</th>
+                      <th>Status</th>
+                      <th>Owner</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reports-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section id="settings-view" class="view-section fade-in d-none">
+            <div class="content-card p-4">
+              <h4 class="fw-bold mb-3">Settings</h4>
+              <div class="row g-4">
+                <div class="col-lg-6">
+                  <div class="module-card p-4">
+                    <h6 class="fw-bold">Hospital Information</h6>
+                    <p class="text-muted mb-0">Manage contact details, address, and hospital profile.</p>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="module-card p-4">
+                    <h6 class="fw-bold">User Profile</h6>
+                    <p class="text-muted mb-0">Control your account settings and password preferences.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <div id="toast-stack" class="toast-stack"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
