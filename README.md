@@ -10,7 +10,7 @@ This project is a starter Hospital Management System built with:
 Run:
 1. Configure src/main/resources/application.properties with your MySQL credentials.
 2. Build & run: mvn spring-boot:run
-3. Open http://localhost:8080/index.html
+3. Open http://localhost:8081/index.html
 4. Default admin login: username=admin, password=admin123
 5. New users can self-register as patients from the login page and will be assigned the patient role.
 
